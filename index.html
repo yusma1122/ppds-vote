@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voting Penerimaan PPDS Obgyn 2025</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: #fafafa;
+        color: #2c3e50;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e1e8ed;
+      }
+
+      .header h1 {
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 0.5rem;
+      }
+
+      .header p {
+        color: #718096;
+        font-size: 1.1rem;
+      }
+
+      .voting-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .kandidat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .candidate-card {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .candidate-card:hover {
+        border-color: #3182ce;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+      }
+
+      .candidate-card.selected {
+        border-color: #3182ce;
+        background: #f7fafc;
+        box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+      }
+
+      .candidate-photo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1rem;
+        border: 3px solid #e2e8f0;
+        transition: border-color 0.3s ease;
+      }
+
+      .candidate-card.selected .candidate-photo {
+        border-color: #3182ce;
+      }
+
+      .candidate-name {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #2d3748;
+        line-height: 1.4;
+        margin-bottom: 0.5rem;
+      }
+
+      .checkbox-wrapper {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      .custom-checkbox {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #cbd5e0;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .custom-checkbox.checked {
+        background: #3182ce;
+        border-color: #3182ce;
+      }
+
+      .custom-checkbox.checked::after {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 120px;
+      }
+
+      .btn-primary {
+        background: #3182ce;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2c5aa0;
+        transform: translateY(-1px);
+      }
+
+      .btn-danger {
+        background: #e53e3e;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #c53030;
+        transform: translateY(-1px);
+      }
+
+      .ranking-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      .ranking-card,
+      .log-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+      }
+
+      .rank-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        background: #f7fafc;
+        border-radius: 8px;
+        border-left: 4px solid #3182ce;
+      }
+
+      .rank-photo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .rank-info {
+        flex: 1;
+      }
+
+      .rank-name {
+        font-weight: 500;
+        color: #2d3748;
+        font-size: 0.9rem;
+      }
+
+      .rank-votes {
+        color: #718096;
+        font-size: 0.8rem;
+      }
+
+      .log-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        background: #f7fafc;
+        border-radius: 6px;
+        font-size: 0.9rem;
+      }
+
+      .log-text {
+        color: #4a5568;
+        flex: 1;
+      }
+
+      .btn-small {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.8rem;
+        border-radius: 4px;
+        border: none;
+        background: #e53e3e;
+        color: white;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .btn-small:hover {
+        background: #c53030;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: #718096;
+        font-style: italic;
+      }
+
+      .developer-credit {
+        background: #1a1a1a;
+        border-radius: 8px;
+        padding: 1.5rem 2rem;
+        margin-top: 3rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        border-left: 4px solid #ffc107;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .developer-credit h4 {
+        color: #ffc107;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .developer-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .developer-details {
+        flex: 1;
+      }
+
+      .developer-name {
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+        letter-spacing: 0.3px;
+      }
+
+      .developer-title {
+        color: #cccccc;
+        font-size: 0.9rem;
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .social-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: transparent;
+        border: 1px solid #444444;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #cccccc;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .social-link:hover {
+        border-color: #ffc107;
+        color: #ffc107;
+        transform: translateY(-1px);
+      }
+
+      .social-link.linkedin:hover {
+        border-color: #0077b5;
+        color: #0077b5;
+      }
+
+      .social-link.github:hover {
+        border-color: #ffffff;
+        color: #ffffff;
+      }
+
+      .social-icon {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+        transition: fill 0.2s ease;
+      }
+
+      .rank-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: #3182ce;
+        color: white;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+
+      .rank-number.gold {
+        background: linear-gradient(135deg, #ffd700, #ffb300);
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+      }
+
+      .rank-number.silver {
+        background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+        box-shadow: 0 2px 8px rgba(192, 192, 192, 0.3);
+      }
+
+      .rank-number.bronze {
+        background: linear-gradient(135deg, #cd7f32, #b8860b);
+        box-shadow: 0 2px 8px rgba(205, 127, 50, 0.3);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .kandidat-grid {
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 1rem;
+        }
+
+        .ranking-section {
+          grid-template-columns: 1fr;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        .header h1 {
+          font-size: 1.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Voting Penerimaan PPDS Obgyn 2025</h1>
+        <p>Pilih kandidat yang menurut Anda layak untuk diterima</p>
+      </div>
+
+      <form id="voteForm">
+        <div class="voting-section">
+          <div class="section-title">👥 Daftar Kandidat</div>
+          <div class="kandidat-grid" id="kandidat"></div>
+          <div class="actions">
+            <button type="submit" class="btn btn-primary">Submit Vote</button>
+            <button type="button" onclick="resetSemua()" class="btn btn-danger">
+              Reset Semua
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="ranking-section">
+        <div class="ranking-card">
+          <div class="section-title">🏆 Peringkat Sementara</div>
+          <div id="ranking"></div>
+        </div>
+
+        <div class="log-card">
+          <div class="section-title">📝 Riwayat Submit</div>
+          <div id="logList"></div>
+        </div>
+      </div>
+
+      <!-- Developer Credit Section -->
+      <div class="developer-credit">
+        <div class="floating-elements"></div>
+        <h4>"What seems small today builds your future tomorrow"</h4>
+        <div class="developer-info">
+          <div>
+            <div class="developer-name">Yusma Rahman</div>
+            <div class="developer-title">Junior Web Developer</div>
+          </div>
+          <div class="social-links">
+            <a
+              href="https://www.linkedin.com/in/yusmarahman09/"
+              target="_blank"
+              class="social-link linkedin"
+            >
+              <svg class="social-icon" viewBox="0 0 24 24">
+                <path
+                  d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                />
+              </svg>
+              LinkedIn
+            </a>
+            <a
+              href="https://github.com/yusma1122"
+              target="_blank"
+              class="social-link github"
+            >
+              <svg class="social-icon" viewBox="0 0 24 24">
+                <path
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                />
+              </svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const kandidatList = [
+        {
+          nama: "dr. Fajar Fanani Joeang",
+          foto: "images/1.jpg",
+          suaraFinal: 0,
+        },
+        { nama: "dr. Prithania Nurindra", foto: "images/2.jpg", suaraFinal: 0 },
+        { nama: "dr. Hj. Noorhasanah", foto: "images/3.jpg", suaraFinal: 0 },
+        {
+          nama: "dr. Henny Desy Monica Banjar Nahor",
+          foto: "images/4.jpg",
+          suaraFinal: 0,
+        },
+        { nama: "dr. Hayatun Nufuz", foto: "images/5.jpg", suaraFinal: 0 },
+        {
+          nama: "dr. Fauzan Akbar Yusyahadi",
+          foto: "images/6.jpg",
+          suaraFinal: 0,
+        },
+        {
+          nama: "dr. Gery Morales Munthe",
+          foto: "images/7.jpg",
+          suaraFinal: 0,
+        },
+        { nama: "dr. Beradona", foto: "images/8.jpg", suaraFinal: 0 },
+        {
+          nama: "dr. Penri Fransiskus Manulang",
+          foto: "images/9.jpg",
+          suaraFinal: 0,
+        },
+        {
+          nama: "dr. Neneng Nurlaila Uspuriyah",
+          foto: "images/10.jpg",
+          suaraFinal: 0,
+        },
+        {
+          nama: "dr. Galih Tri Wicaksono",
+          foto: "images/11.jpg",
+          suaraFinal: 0,
+        },
+      ];
+
+      const kandidatContainer = document.getElementById("kandidat");
+      const rankingEl = document.getElementById("ranking");
+      const logList = document.getElementById("logList");
+      let submitCounter = 0;
+
+      // Storage functions with localStorage for data persistence
+      let submitHistory = [];
+
+      function loadFromStorage() {
+        try {
+          const storedData = localStorage.getItem("voteDataPPDS2025");
+          if (storedData) {
+            const {
+              kandidat,
+              logs,
+              counter,
+              submitHistory: storedHistory,
+            } = JSON.parse(storedData);
+
+            // Restore candidate votes
+            if (kandidat && kandidat.length > 0) {
+              kandidat.forEach((k, i) => {
+                if (kandidatList[i]) {
+                  kandidatList[i].suaraFinal = k.suaraFinal || 0;
+                }
+              });
+            }
+
+            // Restore counter
+            submitCounter = counter || 0;
+
+            // Restore submit history
+            submitHistory = storedHistory || [];
+
+            // Restore logs
+            if (logs && logs.length > 0) {
+              logs.forEach((log, index) => {
+                const submitData = submitHistory[index];
+                addLogItem(log, submitData);
+              });
+            }
+
+            updateRanking();
+          }
+        } catch (error) {
+          console.warn("Error loading data from storage:", error);
+          // Initialize with empty state if there's an error
+          submitHistory = [];
+          submitCounter = 0;
+        }
+      }
+
+      function saveToStorage() {
+        try {
+          const logs = [...logList.querySelectorAll(".log-item")].map(
+            (item) => item.querySelector(".log-text").textContent
+          );
+
+          const dataToSave = {
+            kandidat: kandidatList.map((k) => ({
+              nama: k.nama,
+              foto: k.foto,
+              suaraFinal: k.suaraFinal,
+            })),
+            logs,
+            counter: submitCounter,
+            submitHistory: [...submitHistory],
+            timestamp: new Date().toISOString(),
+          };
+
+          localStorage.setItem("voteDataPPDS2025", JSON.stringify(dataToSave));
+        } catch (error) {
+          console.warn("Error saving data to storage:", error);
+        }
+      }
+
+      function renderKandidat() {
+        kandidatList.forEach((k, index) => {
+          const card = document.createElement("div");
+          card.className = "candidate-card";
+          card.dataset.index = index;
+
+          const img = document.createElement("img");
+          img.src = k.foto;
+          img.alt = k.nama;
+          img.className = "candidate-photo";
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "candidate-name";
+          nameEl.textContent = k.nama;
+
+          const checkboxWrapper = document.createElement("div");
+          checkboxWrapper.className = "checkbox-wrapper";
+
+          const checkbox = document.createElement("div");
+          checkbox.className = "custom-checkbox";
+          checkbox.dataset.index = index;
+
+          checkboxWrapper.appendChild(checkbox);
+          card.appendChild(checkboxWrapper);
+          card.appendChild(img);
+          card.appendChild(nameEl);
+
+          // Click handlers
+          card.addEventListener("click", () => toggleCandidate(index));
+
+          kandidatContainer.appendChild(card);
+        });
+      }
+
+      function toggleCandidate(index) {
+        const card = document.querySelector(`[data-index="${index}"]`);
+        const checkbox = card.querySelector(".custom-checkbox");
+
+        card.classList.toggle("selected");
+        checkbox.classList.toggle("checked");
+      }
+
+      function addLogItem(text, submitData = null) {
+        const item = document.createElement("div");
+        item.className = "log-item";
+
+        const span = document.createElement("span");
+        span.className = "log-text";
+        span.textContent = text;
+
+        const btn = document.createElement("button");
+        btn.className = "btn-small";
+        btn.textContent = "Hapus";
+        btn.onclick = () => {
+          // Show confirmation dialog
+          const confirmDelete = confirm(
+            "Yakin mau hapus riwayat ini?\n\n" +
+              "⚠️ Peringatan: Suara dari kandidat yang dipilih di submit ini akan dikurangi otomatis.\n\n" +
+              "Submit yang akan dihapus:\n" +
+              text
+          );
+
+          if (!confirmDelete) return;
+
+          // Find the index of this log item
+          const logItems = [...logList.querySelectorAll(".log-item")];
+          const itemIndex = logItems.indexOf(item);
+
+          if (itemIndex !== -1 && submitHistory[itemIndex]) {
+            // Reduce votes for candidates in this submit
+            const selectedCandidates = submitHistory[itemIndex];
+            const affectedCandidates = [];
+
+            selectedCandidates.forEach((candidateIndex) => {
+              if (kandidatList[candidateIndex].suaraFinal > 0) {
+                kandidatList[candidateIndex].suaraFinal--;
+                affectedCandidates.push(kandidatList[candidateIndex].nama);
+              }
+            });
+
+            // Remove from history
+            submitHistory.splice(itemIndex, 1);
+
+            // Update ranking
+            updateRanking();
+
+            // Show success message
+            if (affectedCandidates.length > 0) {
+              alert(
+                "✅ Riwayat berhasil dihapus!\n\n" +
+                  "Suara berkurang untuk:\n" +
+                  affectedCandidates.map((nama) => `• ${nama}`).join("\n")
+              );
+            }
+          }
+
+          item.remove();
+          saveToStorage();
+
+          // Check if log list is empty and show empty state
+          if (logList.children.length === 0) {
+            logList.innerHTML =
+              '<div class="empty-state">Belum ada riwayat voting</div>';
+          }
+        };
+
+        item.appendChild(span);
+        item.appendChild(btn);
+        logList.appendChild(item);
+
+        // Remove empty state if it exists
+        const emptyState = logList.querySelector(".empty-state");
+        if (emptyState) {
+          emptyState.remove();
+        }
+      }
+
+      function updateRanking() {
+        const sorted = [...kandidatList].sort(
+          (a, b) => b.suaraFinal - a.suaraFinal
+        );
+
+        if (sorted.every((k) => k.suaraFinal === 0)) {
+          rankingEl.innerHTML =
+            '<div class="empty-state">Belum ada vote yang masuk</div>';
+          return;
+        }
+
+        rankingEl.innerHTML = sorted
+          .filter((k) => k.suaraFinal > 0)
+          .map((k, index) => {
+            const rankNumber = index + 1;
+            let rankClass = "";
+
+            // Add special styling for top 3
+            if (rankNumber === 1) rankClass = "gold";
+            else if (rankNumber === 2) rankClass = "silver";
+            else if (rankNumber === 3) rankClass = "bronze";
+
+            return `
+              <div class="rank-item">
+                <div class="rank-number ${rankClass}">${rankNumber}</div>
+                <img src="${k.foto}" alt="${k.nama}" class="rank-photo">
+                <div class="rank-info">
+                  <div class="rank-name">${k.nama}</div>
+                  <div class="rank-votes">${k.suaraFinal} suara</div>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function resetSemua() {
+        if (
+          confirm(
+            "Yakin mau reset semua data?\n\n⚠️ Semua data voting dan riwayat akan terhapus permanen!"
+          )
+        ) {
+          // Reset all data
+          kandidatList.forEach((k) => (k.suaraFinal = 0));
+          submitCounter = 0;
+          submitHistory = [];
+
+          // Clear localStorage
+          localStorage.removeItem("voteDataPPDS2025");
+
+          // Reset UI
+          logList.innerHTML =
+            '<div class="empty-state">Belum ada riwayat voting</div>';
+          document.querySelectorAll(".candidate-card").forEach((card) => {
+            card.classList.remove("selected");
+            card.querySelector(".custom-checkbox").classList.remove("checked");
+          });
+
+          updateRanking();
+
+          alert("✅ Semua data berhasil direset!");
+        }
+      }
+
+      document
+        .getElementById("voteForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const selectedCards = document.querySelectorAll(
+            ".candidate-card.selected"
+          );
+
+          if (selectedCards.length === 0) {
+            alert("Pilih setidaknya satu kandidat!");
+            return;
+          }
+
+          const konfirmasi = confirm(
+            `Kamu memilih ${selectedCards.length} kandidat. Yakin submit?`
+          );
+          if (!konfirmasi) return;
+
+          const namaDipilih = [];
+          const selectedIndices = []; // Store indices for history tracking
+
+          selectedCards.forEach((card) => {
+            const index = parseInt(card.dataset.index);
+            kandidatList[index].suaraFinal++;
+            namaDipilih.push(kandidatList[index].nama);
+            selectedIndices.push(index); // Store the index
+
+            // Reset selection
+            card.classList.remove("selected");
+            card.querySelector(".custom-checkbox").classList.remove("checked");
+          });
+
+          submitCounter++;
+
+          // Store the submit data in history
+          submitHistory.push(selectedIndices);
+
+          const logText = `Submit ke-${submitCounter}: ${namaDipilih.join(
+            ", "
+          )}`;
+          addLogItem(logText, selectedIndices);
+          updateRanking();
+          saveToStorage();
+        });
+
+      // Initialize with better error handling
+      try {
+        renderKandidat();
+        loadFromStorage();
+        updateRanking();
+
+        // Set initial empty state for logs if needed
+        if (logList.children.length === 0) {
+          logList.innerHTML =
+            '<div class="empty-state">Belum ada riwayat voting</div>';
+        }
+
+        console.log("Voting system initialized successfully");
+      } catch (error) {
+        console.error("Error initializing voting system:", error);
+        alert(
+          "⚠️ Terjadi kesalahan saat memuat data. Sistem akan dimulai dengan data kosong."
+        );
+      }
+    </script>
+  </body>
+</html>
