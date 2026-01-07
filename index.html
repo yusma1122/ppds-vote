@@ -1,461 +1,459 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <title>Voting Counter</title>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: #fafafa;
-        color: #2c3e50;
-        line-height: 1.6;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-      }
-
-      .header {
-        text-align: center;
-        margin-bottom: 3rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid #e1e8ed;
-      }
-
-      .header h1 {
-        font-size: 2.2rem;
-        font-weight: 600;
-        color: #1a202c;
-        margin-bottom: 0.5rem;
-      }
-
-      .header p {
-        color: #718096;
-        font-size: 1.1rem;
-      }
-
-      .voting-section {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        border: 1px solid #e2e8f0;
-      }
-
-      .section-title {
-        font-size: 1.3rem;
-        font-weight: 600;
-        color: #2d3748;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .kandidat-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-      }
-
-      .candidate-card {
-        background: white;
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 1.5rem;
-        text-align: center;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        position: relative;
-      }
-
-      .candidate-card:hover {
-        border-color: #3182ce;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
-      }
-
-      .candidate-card.selected {
-        border-color: #3182ce;
-        background: #f7fafc;
-        box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
-      }
-
-      .candidate-photo {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin: 0 auto 1rem;
-        border: 3px solid #e2e8f0;
-        transition: border-color 0.3s ease;
-      }
-
-      .candidate-card.selected .candidate-photo {
-        border-color: #3182ce;
-      }
-
-      .candidate-name {
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: #2d3748;
-        line-height: 1.4;
-        margin-bottom: 0.5rem;
-      }
-
-      .checkbox-wrapper {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-      }
-
-      .custom-checkbox {
-        width: 20px;
-        height: 20px;
-        border: 2px solid #cbd5e0;
-        border-radius: 4px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        position: relative;
-      }
-
-      .custom-checkbox.checked {
-        background: #3182ce;
-        border-color: #3182ce;
-      }
-
-      .custom-checkbox.checked::after {
-        content: "✓";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 12px;
-        font-weight: bold;
-      }
-
-      .actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-
-      .btn {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        min-width: 120px;
-      }
-
-      .btn-primary {
-        background: #3182ce;
-        color: white;
-      }
-
-      .btn-primary:hover {
-        background: #2c5aa0;
-        transform: translateY(-1px);
-      }
-
-      .btn-danger {
-        background: #e53e3e;
-        color: white;
-      }
-
-      .btn-danger:hover {
-        background: #c53030;
-        transform: translateY(-1px);
-      }
-
-      .ranking-section {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-      }
-
-      .ranking-card,
-      .log-card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        border: 1px solid #e2e8f0;
-      }
-
-      .rank-item {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.75rem;
-        margin-bottom: 0.5rem;
-        background: #f7fafc;
-        border-radius: 8px;
-        border-left: 4px solid #3182ce;
-      }
-
-      .rank-photo {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      .rank-info {
-        flex: 1;
-      }
-
-      .rank-name {
-        font-weight: 500;
-        color: #2d3748;
-        font-size: 0.9rem;
-      }
-
-      .rank-votes {
-        color: #718096;
-        font-size: 0.8rem;
-      }
-
-      .log-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem;
-        margin-bottom: 0.5rem;
-        background: #f7fafc;
-        border-radius: 6px;
-        font-size: 0.9rem;
-      }
-
-      .log-text {
-        color: #4a5568;
-        flex: 1;
-      }
-
-      .btn-small {
-        padding: 0.25rem 0.75rem;
-        font-size: 0.8rem;
-        border-radius: 4px;
-        border: none;
-        background: #e53e3e;
-        color: white;
-        cursor: pointer;
-        transition: background 0.2s ease;
-      }
-
-      .btn-small:hover {
-        background: #c53030;
-      }
-
-      .empty-state {
-        text-align: center;
-        padding: 2rem;
-        color: #718096;
-        font-style: italic;
-      }
-
-      .developer-credit {
-        background: #1a1a1a;
-        border-radius: 8px;
-        padding: 1.5rem 2rem;
-        margin-top: 3rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-        border-left: 4px solid #ffc107;
-        text-align: left;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .developer-credit h4 {
-        color: #ffc107;
-        font-size: 1rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        position: relative;
-        z-index: 1;
-      }
-
-      .developer-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 2rem;
-        position: relative;
-        z-index: 1;
-      }
-
-      .developer-details {
-        flex: 1;
-      }
-
-      .developer-name {
-        color: #ffffff;
-        font-weight: 600;
-        font-size: 1.2rem;
-        margin-bottom: 0.3rem;
-        letter-spacing: 0.3px;
-      }
-
-      .developer-title {
-        color: #cccccc;
-        font-size: 0.9rem;
-        font-weight: 400;
-        margin-bottom: 0;
-      }
-
-      .social-links {
-        display: flex;
-        gap: 0.75rem;
-        align-items: center;
-      }
-
-      .social-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: transparent;
-        border: 1px solid #444444;
-        border-radius: 6px;
-        text-decoration: none;
-        color: #cccccc;
-        font-size: 0.85rem;
-        font-weight: 500;
-        transition: all 0.2s ease;
-        position: relative;
-      }
-
-      .social-link:hover {
-        border-color: #ffc107;
-        color: #ffc107;
-        transform: translateY(-1px);
-      }
-
-      .social-link.linkedin:hover {
-        border-color: #0077b5;
-        color: #0077b5;
-      }
-
-      .social-link.github:hover {
-        border-color: #ffffff;
-        color: #ffffff;
-      }
-
-      .social-icon {
-        width: 16px;
-        height: 16px;
-        fill: currentColor;
-        transition: fill 0.2s ease;
-      }
-
-      .rank-number {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        background: #3182ce;
-        color: white;
-        border-radius: 50%;
-        font-weight: 700;
-        font-size: 0.9rem;
-        flex-shrink: 0;
-      }
-
-      .rank-number.gold {
-        background: linear-gradient(135deg, #ffd700, #ffb300);
-        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
-      }
-
-      .rank-number.silver {
-        background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
-        box-shadow: 0 2px 8px rgba(192, 192, 192, 0.3);
-      }
-
-      .rank-number.bronze {
-        background: linear-gradient(135deg, #cd7f32, #b8860b);
-        box-shadow: 0 2px 8px rgba(205, 127, 50, 0.3);
-      }
-
-      @media (max-width: 768px) {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #fafafa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
         .container {
-          padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
-
-        .kandidat-grid {
-          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-          gap: 1rem;
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e1e8ed;
         }
-
-        .ranking-section {
-          grid-template-columns: 1fr;
-        }
-
-        .actions {
-          flex-direction: column;
-        }
-
+        
         .header h1 {
-          font-size: 1.8rem;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
         }
-      }
+        
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+        
+        .voting-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .kandidat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .candidate-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .candidate-card:hover {
+            border-color: #3182ce;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        
+        .candidate-card.selected {
+            border-color: #3182ce;
+            background: #f7fafc;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        
+        .candidate-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 3px solid #e2e8f0;
+            transition: border-color 0.3s ease;
+        }
+        
+        .candidate-card.selected .candidate-photo {
+            border-color: #3182ce;
+        }
+        
+        .candidate-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #2d3748;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+        
+        .checkbox-wrapper {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .custom-checkbox.checked {
+            background: #3182ce;
+            border-color: #3182ce;
+        }
+        
+        .custom-checkbox.checked::after {
+            content: "✓";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+        
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2c5aa0;
+            transform: translateY(-1px);
+        }
+        
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+        }
+        
+        .ranking-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .ranking-card,
+        .log-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .rank-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 4px solid #3182ce;
+        }
+        
+        .rank-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .rank-info {
+            flex: 1;
+        }
+        
+        .rank-name {
+            font-weight: 500;
+            color: #2d3748;
+            font-size: 0.9rem;
+        }
+        
+        .rank-votes {
+            color: #718096;
+            font-size: 0.8rem;
+        }
+        
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f7fafc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .log-text {
+            color: #4a5568;
+            flex: 1;
+        }
+        
+        .btn-small {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            border: none;
+            background: #e53e3e;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .btn-small:hover {
+            background: #c53030;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #718096;
+            font-style: italic;
+        }
+        
+        .developer-credit {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 1.5rem 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid #ffc107;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .developer-credit h4 {
+            color: #ffc107;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .developer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .developer-details {
+            flex: 1;
+        }
+        
+        .developer-name {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.3px;
+        }
+        
+        .developer-title {
+            color: #cccccc;
+            font-size: 0.9rem;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid #444444;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #cccccc;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .social-link:hover {
+            border-color: #ffc107;
+            color: #ffc107;
+            transform: translateY(-1px);
+        }
+        
+        .social-link.linkedin:hover {
+            border-color: #0077b5;
+            color: #0077b5;
+        }
+        
+        .social-link.github:hover {
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+        
+        .social-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transition: fill 0.2s ease;
+        }
+        
+        .rank-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #3182ce;
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .rank-number.gold {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+        }
+        
+        .rank-number.silver {
+            background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+            box-shadow: 0 2px 8px rgba(192, 192, 192, 0.3);
+        }
+        
+        .rank-number.bronze {
+            background: linear-gradient(135deg, #cd7f32, #b8860b);
+            box-shadow: 0 2px 8px rgba(205, 127, 50, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .kandidat-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 1rem;
+            }
+            .ranking-section {
+                grid-template-columns: 1fr;
+            }
+            .actions {
+                flex-direction: column;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>Voting Counter Penerimaan PPDS Obgyn 2025</h1>
-        <p>Pilih kandidat yang menurut Anda layak untuk diterima</p>
-      </div>
+</head>
 
-      <form id="voteForm">
-        <div class="voting-section">
-          <div class="section-title">👥 Daftar Kandidat</div>
-          <div class="kandidat-grid" id="kandidat"></div>
-          <div class="actions">
-            <button type="submit" class="btn btn-primary">Submit Vote</button>
-            <button type="button" onclick="resetSemua()" class="btn btn-danger">
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Voting Counter Penerimaan</h1>
+            <h1>PPDS OBGYN FKIK ULM Periode Februari 2026</h1>
+            <p>Pilih kandidat yang menurut Anda layak untuk diterima</p>
+        </div>
+
+        <form id="voteForm">
+            <div class="voting-section">
+                <div class="section-title">👥 Daftar Kandidat</div>
+                <div class="kandidat-grid" id="kandidat"></div>
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Submit Vote</button>
+                    <button type="button" onclick="resetSemua()" class="btn btn-danger">
               Reset Semua
             </button>
-          </div>
-        </div>
-      </form>
+                </div>
+            </div>
+        </form>
 
-      <div class="ranking-section">
-        <div class="ranking-card">
-          <div class="section-title">🏆 Peringkat Sementara</div>
-          <div id="ranking"></div>
+        <div class="ranking-section">
+            <div class="ranking-card">
+                <div class="section-title">🏆 Peringkat Sementara</div>
+                <div id="ranking"></div>
+            </div>
+
+            <div class="log-card">
+                <div class="section-title">📝 Riwayat Submit</div>
+                <div id="logList"></div>
+            </div>
         </div>
 
-        <div class="log-card">
-          <div class="section-title">📝 Riwayat Submit</div>
-          <div id="logList"></div>
-        </div>
-      </div>
-
-      <!-- Developer Credit Section -->
-      <!-- <div class="developer-credit">
+        <!-- Developer Credit Section -->
+        <!-- <div class="developer-credit">
         <div class="floating-elements"></div>
         <h4>"What seems small today builds your future tomorrow"</h4>
         <div class="developer-info">
@@ -494,265 +492,271 @@
     </div>
 
     <script>
-      const kandidatList = [
-        {
-          nama: "Kandidat 1",
-          foto: "images/1.jpg",
-          suaraFinal: 0,
-        },
-        { nama: "Kandidat 2", foto: "images/2.jpg", suaraFinal: 0 },
-        { nama: "Kandidat 3", foto: "images/3.jpg", suaraFinal: 0 },
-        {
-          nama: "Kandidat 4",
-          foto: "images/4.jpg",
-          suaraFinal: 0,
-        },
-        { nama: "Kandidat 5", foto: "images/5.jpg", suaraFinal: 0 },
-        {
-          nama: "Kandidat 6",
-          foto: "images/6.jpg",
-          suaraFinal: 0,
-        },
-        {
-          nama: "Kandidat 7",
-          foto: "images/7.jpg",
-          suaraFinal: 0,
-        },
-        { nama: "Kandidat 8", foto: "images/8.jpg", suaraFinal: 0 },
-        {
-          nama: "Kandidat 9",
-          foto: "images/9.jpg",
-          suaraFinal: 0,
-        },
-        {
-          nama: "Kandidat 10",
+        const kandidatList = [{
+                nama: "Rendy Singgih",
+                foto: "images/1.png",
+                suaraFinal: 0,
+            }, {
+                nama: "Galih Tri Wicaksono",
+                foto: "images/2.png",
+                suaraFinal: 0
+            }, {
+                nama: "Penri Fransiskus Manulang",
+                foto: "images/3.png",
+                suaraFinal: 0
+            }, {
+                nama: "Laila Azizah",
+                foto: "images/4.png",
+                suaraFinal: 0,
+            }, {
+                nama: "Insan Fakhri Muhammady",
+                foto: "images/5.png",
+                suaraFinal: 0
+            }, {
+                nama: "Muhammad Rangga Adhityawarman",
+                foto: "images/6.png",
+                suaraFinal: 0,
+            }
+            //, {
+            //     nama: "Kandidat 7",
+            //     foto: "images/7.jpg",
+            //     suaraFinal: 0,
+            // }, {
+            //     nama: "Kandidat 8",
+            //     foto: "images/8.jpg",
+            //     suaraFinal: 0
+            // }, {
+            //     nama: "Kandidat 9",
+            //     foto: "images/9.jpg",
+            //     suaraFinal: 0,
+            // }, {
+            //     nama: "Kandidat 10",
 
-          foto: "images/10.jpg",
-          suaraFinal: 0,
-        },
-        {
-          nama: "Kandidat 11",
-          foto: "images/11.jpg",
-          suaraFinal: 0,
-        },
-      ];
+            //     foto: "images/10.jpg",
+            //     suaraFinal: 0,
+            // }, {
+            //     nama: "Kandidat 11",
+            //     foto: "images/11.jpg",
+            //     suaraFinal: 0,
+            // }, 
+        ];
 
-      const kandidatContainer = document.getElementById("kandidat");
-      const rankingEl = document.getElementById("ranking");
-      const logList = document.getElementById("logList");
-      let submitCounter = 0;
+        const kandidatContainer = document.getElementById("kandidat");
+        const rankingEl = document.getElementById("ranking");
+        const logList = document.getElementById("logList");
+        let submitCounter = 0;
 
-      // Storage functions with localStorage for data persistence
-      let submitHistory = [];
+        // Storage functions with localStorage for data persistence
+        let submitHistory = [];
 
-      function loadFromStorage() {
-        try {
-          const storedData = localStorage.getItem("voteDataPPDS2025");
-          if (storedData) {
-            const {
-              kandidat,
-              logs,
-              counter,
-              submitHistory: storedHistory,
-            } = JSON.parse(storedData);
+        function loadFromStorage() {
+            try {
+                const storedData = localStorage.getItem("voteDataPPDS2025");
+                if (storedData) {
+                    const {
+                        kandidat,
+                        logs,
+                        counter,
+                        submitHistory: storedHistory,
+                    } = JSON.parse(storedData);
 
-            // Restore candidate votes
-            if (kandidat && kandidat.length > 0) {
-              kandidat.forEach((k, i) => {
-                if (kandidatList[i]) {
-                  kandidatList[i].suaraFinal = k.suaraFinal || 0;
+                    // Restore candidate votes
+                    if (kandidat && kandidat.length > 0) {
+                        kandidat.forEach((k, i) => {
+                            if (kandidatList[i]) {
+                                kandidatList[i].suaraFinal = k.suaraFinal || 0;
+                            }
+                        });
+                    }
+
+                    // Restore counter
+                    submitCounter = counter || 0;
+
+                    // Restore submit history
+                    submitHistory = storedHistory || [];
+
+                    // Restore logs
+                    if (logs && logs.length > 0) {
+                        logs.forEach((log, index) => {
+                            const submitData = submitHistory[index];
+                            addLogItem(log, submitData);
+                        });
+                    }
+
+                    updateRanking();
                 }
-              });
+            } catch (error) {
+                console.warn("Error loading data from storage:", error);
+                // Initialize with empty state if there's an error
+                submitHistory = [];
+                submitCounter = 0;
             }
+        }
 
-            // Restore counter
-            submitCounter = counter || 0;
+        function saveToStorage() {
+            try {
+                const logs = [...logList.querySelectorAll(".log-item")].map(
+                    (item) => item.querySelector(".log-text").textContent
+                );
 
-            // Restore submit history
-            submitHistory = storedHistory || [];
+                const dataToSave = {
+                    kandidat: kandidatList.map((k) => ({
+                        nama: k.nama,
+                        foto: k.foto,
+                        suaraFinal: k.suaraFinal,
+                    })),
+                    logs,
+                    counter: submitCounter,
+                    submitHistory: [...submitHistory],
+                    timestamp: new Date().toISOString(),
+                };
 
-            // Restore logs
-            if (logs && logs.length > 0) {
-              logs.forEach((log, index) => {
-                const submitData = submitHistory[index];
-                addLogItem(log, submitData);
-              });
+                localStorage.setItem("voteDataPPDS2025", JSON.stringify(dataToSave));
+            } catch (error) {
+                console.warn("Error saving data to storage:", error);
             }
-
-            updateRanking();
-          }
-        } catch (error) {
-          console.warn("Error loading data from storage:", error);
-          // Initialize with empty state if there's an error
-          submitHistory = [];
-          submitCounter = 0;
         }
-      }
 
-      function saveToStorage() {
-        try {
-          const logs = [...logList.querySelectorAll(".log-item")].map(
-            (item) => item.querySelector(".log-text").textContent
-          );
+        function renderKandidat() {
+            kandidatList.forEach((k, index) => {
+                const card = document.createElement("div");
+                card.className = "candidate-card";
+                card.dataset.index = index;
 
-          const dataToSave = {
-            kandidat: kandidatList.map((k) => ({
-              nama: k.nama,
-              foto: k.foto,
-              suaraFinal: k.suaraFinal,
-            })),
-            logs,
-            counter: submitCounter,
-            submitHistory: [...submitHistory],
-            timestamp: new Date().toISOString(),
-          };
+                const img = document.createElement("img");
+                img.src = k.foto;
+                img.alt = k.nama;
+                img.className = "candidate-photo";
 
-          localStorage.setItem("voteDataPPDS2025", JSON.stringify(dataToSave));
-        } catch (error) {
-          console.warn("Error saving data to storage:", error);
-        }
-      }
+                const nameEl = document.createElement("div");
+                nameEl.className = "candidate-name";
+                nameEl.textContent = k.nama;
 
-      function renderKandidat() {
-        kandidatList.forEach((k, index) => {
-          const card = document.createElement("div");
-          card.className = "candidate-card";
-          card.dataset.index = index;
+                const checkboxWrapper = document.createElement("div");
+                checkboxWrapper.className = "checkbox-wrapper";
 
-          const img = document.createElement("img");
-          img.src = k.foto;
-          img.alt = k.nama;
-          img.className = "candidate-photo";
+                const checkbox = document.createElement("div");
+                checkbox.className = "custom-checkbox";
+                checkbox.dataset.index = index;
 
-          const nameEl = document.createElement("div");
-          nameEl.className = "candidate-name";
-          nameEl.textContent = k.nama;
+                checkboxWrapper.appendChild(checkbox);
+                card.appendChild(checkboxWrapper);
+                card.appendChild(img);
+                card.appendChild(nameEl);
 
-          const checkboxWrapper = document.createElement("div");
-          checkboxWrapper.className = "checkbox-wrapper";
+                // Click handlers
+                card.addEventListener("click", () => toggleCandidate(index));
 
-          const checkbox = document.createElement("div");
-          checkbox.className = "custom-checkbox";
-          checkbox.dataset.index = index;
-
-          checkboxWrapper.appendChild(checkbox);
-          card.appendChild(checkboxWrapper);
-          card.appendChild(img);
-          card.appendChild(nameEl);
-
-          // Click handlers
-          card.addEventListener("click", () => toggleCandidate(index));
-
-          kandidatContainer.appendChild(card);
-        });
-      }
-
-      function toggleCandidate(index) {
-        const card = document.querySelector(`[data-index="${index}"]`);
-        const checkbox = card.querySelector(".custom-checkbox");
-
-        card.classList.toggle("selected");
-        checkbox.classList.toggle("checked");
-      }
-
-      function addLogItem(text, submitData = null) {
-        const item = document.createElement("div");
-        item.className = "log-item";
-
-        const span = document.createElement("span");
-        span.className = "log-text";
-        span.textContent = text;
-
-        const btn = document.createElement("button");
-        btn.className = "btn-small";
-        btn.textContent = "Hapus";
-        btn.onclick = () => {
-          // Show confirmation dialog
-          const confirmDelete = confirm(
-            "Yakin mau hapus riwayat ini?\n\n" +
-              "⚠️ Peringatan: Suara dari kandidat yang dipilih di submit ini akan dikurangi otomatis.\n\n" +
-              "Submit yang akan dihapus:\n" +
-              text
-          );
-
-          if (!confirmDelete) return;
-
-          // Find the index of this log item
-          const logItems = [...logList.querySelectorAll(".log-item")];
-          const itemIndex = logItems.indexOf(item);
-
-          if (itemIndex !== -1 && submitHistory[itemIndex]) {
-            // Reduce votes for candidates in this submit
-            const selectedCandidates = submitHistory[itemIndex];
-            const affectedCandidates = [];
-
-            selectedCandidates.forEach((candidateIndex) => {
-              if (kandidatList[candidateIndex].suaraFinal > 0) {
-                kandidatList[candidateIndex].suaraFinal--;
-                affectedCandidates.push(kandidatList[candidateIndex].nama);
-              }
+                kandidatContainer.appendChild(card);
             });
+        }
 
-            // Remove from history
-            submitHistory.splice(itemIndex, 1);
+        function toggleCandidate(index) {
+            const card = document.querySelector(`[data-index="${index}"]`);
+            const checkbox = card.querySelector(".custom-checkbox");
 
-            // Update ranking
-            updateRanking();
+            card.classList.toggle("selected");
+            checkbox.classList.toggle("checked");
+        }
 
-            // Show success message
-            if (affectedCandidates.length > 0) {
-              alert(
-                "✅ Riwayat berhasil dihapus!\n\n" +
-                  "Suara berkurang untuk:\n" +
-                  affectedCandidates.map((nama) => `• ${nama}`).join("\n")
-              );
+        function addLogItem(text, submitData = null) {
+            const item = document.createElement("div");
+            item.className = "log-item";
+
+            const span = document.createElement("span");
+            span.className = "log-text";
+            span.textContent = text;
+
+            const btn = document.createElement("button");
+            btn.className = "btn-small";
+            btn.textContent = "Hapus";
+            btn.onclick = () => {
+                // Show confirmation dialog
+                const confirmDelete = confirm(
+                    "Yakin mau hapus riwayat ini?\n\n" +
+                    "⚠️ Peringatan: Suara dari kandidat yang dipilih di submit ini akan dikurangi otomatis.\n\n" +
+                    "Submit yang akan dihapus:\n" +
+                    text
+                );
+
+                if (!confirmDelete) return;
+
+                // Find the index of this log item
+                const logItems = [...logList.querySelectorAll(".log-item")];
+                const itemIndex = logItems.indexOf(item);
+
+                if (itemIndex !== -1 && submitHistory[itemIndex]) {
+                    // Reduce votes for candidates in this submit
+                    const selectedCandidates = submitHistory[itemIndex];
+                    const affectedCandidates = [];
+
+                    selectedCandidates.forEach((candidateIndex) => {
+                        if (kandidatList[candidateIndex].suaraFinal > 0) {
+                            kandidatList[candidateIndex].suaraFinal--;
+                            affectedCandidates.push(kandidatList[candidateIndex].nama);
+                        }
+                    });
+
+                    // Remove from history
+                    submitHistory.splice(itemIndex, 1);
+
+                    // Update ranking
+                    updateRanking();
+
+                    // Show success message
+                    if (affectedCandidates.length > 0) {
+                        alert(
+                            "✅ Riwayat berhasil dihapus!\n\n" +
+                            "Suara berkurang untuk:\n" +
+                            affectedCandidates.map((nama) => `• ${nama}`).join("\n")
+                        );
+                    }
+                }
+
+                item.remove();
+                saveToStorage();
+
+                // Check if log list is empty and show empty state
+                if (logList.children.length === 0) {
+                    logList.innerHTML =
+                        '<div class="empty-state">Belum ada riwayat voting</div>';
+                }
+            };
+
+            item.appendChild(span);
+            item.appendChild(btn);
+            logList.appendChild(item);
+
+            // Remove empty state if it exists
+            const emptyState = logList.querySelector(".empty-state");
+            if (emptyState) {
+                emptyState.remove();
             }
-          }
-
-          item.remove();
-          saveToStorage();
-
-          // Check if log list is empty and show empty state
-          if (logList.children.length === 0) {
-            logList.innerHTML =
-              '<div class="empty-state">Belum ada riwayat voting</div>';
-          }
-        };
-
-        item.appendChild(span);
-        item.appendChild(btn);
-        logList.appendChild(item);
-
-        // Remove empty state if it exists
-        const emptyState = logList.querySelector(".empty-state");
-        if (emptyState) {
-          emptyState.remove();
-        }
-      }
-
-      function updateRanking() {
-        const sorted = [...kandidatList].sort(
-          (a, b) => b.suaraFinal - a.suaraFinal
-        );
-
-        if (sorted.every((k) => k.suaraFinal === 0)) {
-          rankingEl.innerHTML =
-            '<div class="empty-state">Belum ada vote yang masuk</div>';
-          return;
         }
 
-        rankingEl.innerHTML = sorted
-          .filter((k) => k.suaraFinal > 0)
-          .map((k, index) => {
-            const rankNumber = index + 1;
-            let rankClass = "";
+        function updateRanking() {
+            const sorted = [...kandidatList].sort(
+                (a, b) => b.suaraFinal - a.suaraFinal
+            );
 
-            // Add special styling for top 3
-            if (rankNumber === 1) rankClass = "gold";
-            else if (rankNumber === 2) rankClass = "silver";
-            else if (rankNumber === 3) rankClass = "bronze";
+            if (sorted.every((k) => k.suaraFinal === 0)) {
+                rankingEl.innerHTML =
+                    '<div class="empty-state">Belum ada vote yang masuk</div>';
+                return;
+            }
 
-            return `
+            rankingEl.innerHTML = sorted
+                .filter((k) => k.suaraFinal > 0)
+                .map((k, index) => {
+                    const rankNumber = index + 1;
+                    let rankClass = "";
+
+                    // Add special styling for top 3
+                    if (rankNumber === 1) rankClass = "gold";
+                    else if (rankNumber === 2) rankClass = "silver";
+                    else if (rankNumber === 3) rankClass = "bronze";
+
+                    return `
               <div class="rank-item">
                 <div class="rank-number ${rankClass}">${rankNumber}</div>
                 <img src="${k.foto}" alt="${k.nama}" class="rank-photo">
@@ -762,103 +766,104 @@
                 </div>
               </div>
             `;
-          })
-          .join("");
-      }
-
-      function resetSemua() {
-        if (
-          confirm(
-            "Yakin mau reset semua data?\n\n⚠️ Semua data voting dan riwayat akan terhapus permanen!"
-          )
-        ) {
-          // Reset all data
-          kandidatList.forEach((k) => (k.suaraFinal = 0));
-          submitCounter = 0;
-          submitHistory = [];
-
-          // Clear localStorage
-          localStorage.removeItem("voteDataPPDS2025");
-
-          // Reset UI
-          logList.innerHTML =
-            '<div class="empty-state">Belum ada riwayat voting</div>';
-          document.querySelectorAll(".candidate-card").forEach((card) => {
-            card.classList.remove("selected");
-            card.querySelector(".custom-checkbox").classList.remove("checked");
-          });
-
-          updateRanking();
-
-          alert("✅ Semua data berhasil direset!");
+                })
+                .join("");
         }
-      }
 
-      document
-        .getElementById("voteForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
+        function resetSemua() {
+            if (
+                confirm(
+                    "Yakin mau reset semua data?\n\n⚠️ Semua data voting dan riwayat akan terhapus permanen!"
+                )
+            ) {
+                // Reset all data
+                kandidatList.forEach((k) => (k.suaraFinal = 0));
+                submitCounter = 0;
+                submitHistory = [];
 
-          const selectedCards = document.querySelectorAll(
-            ".candidate-card.selected"
-          );
+                // Clear localStorage
+                localStorage.removeItem("voteDataPPDS2025");
 
-          if (selectedCards.length === 0) {
-            alert("Pilih setidaknya satu kandidat!");
-            return;
-          }
+                // Reset UI
+                logList.innerHTML =
+                    '<div class="empty-state">Belum ada riwayat voting</div>';
+                document.querySelectorAll(".candidate-card").forEach((card) => {
+                    card.classList.remove("selected");
+                    card.querySelector(".custom-checkbox").classList.remove("checked");
+                });
 
-          const konfirmasi = confirm(
-            `Kamu memilih ${selectedCards.length} kandidat. Yakin submit?`
-          );
-          if (!konfirmasi) return;
+                updateRanking();
 
-          const namaDipilih = [];
-          const selectedIndices = []; // Store indices for history tracking
+                alert("✅ Semua data berhasil direset!");
+            }
+        }
 
-          selectedCards.forEach((card) => {
-            const index = parseInt(card.dataset.index);
-            kandidatList[index].suaraFinal++;
-            namaDipilih.push(kandidatList[index].nama);
-            selectedIndices.push(index); // Store the index
+        document
+            .getElementById("voteForm")
+            .addEventListener("submit", function(e) {
+                e.preventDefault();
 
-            // Reset selection
-            card.classList.remove("selected");
-            card.querySelector(".custom-checkbox").classList.remove("checked");
-          });
+                const selectedCards = document.querySelectorAll(
+                    ".candidate-card.selected"
+                );
 
-          submitCounter++;
+                if (selectedCards.length === 0) {
+                    alert("Pilih setidaknya satu kandidat!");
+                    return;
+                }
 
-          // Store the submit data in history
-          submitHistory.push(selectedIndices);
+                const konfirmasi = confirm(
+                    `Kamu memilih ${selectedCards.length} kandidat. Yakin submit?`
+                );
+                if (!konfirmasi) return;
 
-          const logText = `Submit ke-${submitCounter}: ${namaDipilih.join(
+                const namaDipilih = [];
+                const selectedIndices = []; // Store indices for history tracking
+
+                selectedCards.forEach((card) => {
+                    const index = parseInt(card.dataset.index);
+                    kandidatList[index].suaraFinal++;
+                    namaDipilih.push(kandidatList[index].nama);
+                    selectedIndices.push(index); // Store the index
+
+                    // Reset selection
+                    card.classList.remove("selected");
+                    card.querySelector(".custom-checkbox").classList.remove("checked");
+                });
+
+                submitCounter++;
+
+                // Store the submit data in history
+                submitHistory.push(selectedIndices);
+
+                const logText = `Submit ke-${submitCounter}: ${namaDipilih.join(
             ", "
           )}`;
-          addLogItem(logText, selectedIndices);
-          updateRanking();
-          saveToStorage();
-        });
+                addLogItem(logText, selectedIndices);
+                updateRanking();
+                saveToStorage();
+            });
 
-      // Initialize with better error handling
-      try {
-        renderKandidat();
-        loadFromStorage();
-        updateRanking();
+        // Initialize with better error handling
+        try {
+            renderKandidat();
+            loadFromStorage();
+            updateRanking();
 
-        // Set initial empty state for logs if needed
-        if (logList.children.length === 0) {
-          logList.innerHTML =
-            '<div class="empty-state">Belum ada riwayat voting</div>';
+            // Set initial empty state for logs if needed
+            if (logList.children.length === 0) {
+                logList.innerHTML =
+                    '<div class="empty-state">Belum ada riwayat voting</div>';
+            }
+
+            console.log("Voting system initialized successfully");
+        } catch (error) {
+            console.error("Error initializing voting system:", error);
+            alert(
+                "⚠️ Terjadi kesalahan saat memuat data. Sistem akan dimulai dengan data kosong."
+            );
         }
-
-        console.log("Voting system initialized successfully");
-      } catch (error) {
-        console.error("Error initializing voting system:", error);
-        alert(
-          "⚠️ Terjadi kesalahan saat memuat data. Sistem akan dimulai dengan data kosong."
-        );
-      }
     </script>
-  </body>
+</body>
+
 </html>
